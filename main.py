@@ -92,12 +92,12 @@ with the actual target values.
 
 """
 
-cross_val_prediction = cross_val_predict(sgd_clf, x_train, y_train_5, cv=3) # cv=3 means 3-fold cross-validation
+y_train_pred = cross_val_predict(sgd_clf, x_train, y_train_5, cv=3) # cv=3 means 3-fold cross-validation
 
 # now confusion matrix can be calculated by passing target classes and predicted classes to 
 # confusion_matrix function
 
-confusionmatrix = confusion_matrix(y_train_5, cross_val_prediction)
+confusionmatrix = confusion_matrix(y_train_5, y_train_pred)
 
 print(f"Confusion matrix:\n{confusionmatrix}")
 
@@ -117,6 +117,55 @@ the result of the confusion matrix looks for y_predict_5
 
 confusion matrix on perfect predicted classes have only values for TP and TN , and 0 value for FP and FN
 """
+
+# from the confusion matrix, we can calculate precision and recall
+
+from sklearn.metrics import precision_score, recall_score
+
+precision = precision_score(y_train_5, y_train_pred)
+recall = recall_score(y_train_5, y_train_pred)
+
+print(f"Precision: {precision}")
+print(f"Recall: {recall}")
+
+# F1 score is the harmonic mean of precision and recall, which gives a single metric to evaluate the model's performance.
+
+f1_score = 2 * (precision * recall) / (precision + recall)
+print(f"F1 score: {f1_score}")
+
+# or simply use the f1_score function from sklearn.metrics
+
+from sklearn.metrics import f1_score as f1_score_func
+f1_score = f1_score_func(y_train_5, y_train_pred)
+
+print(f"F1 score: {f1_score}")
+
+
+"""
+
+precision and recall are often in tension with each other. 
+Increasing precision reduces recall and vice versa.
+For example, if you want to increase precision, you can set a higher threshold for classifying 
+a sample as positive. This means that the model will be more conservative in predicting positive samples,
+which will reduce the number of false positives and increase precision. However, this will also 
+increase the number of false negatives, which will reduce recall. 
+
+recall = ( TP / (TP + FN)) if you increase the threshold, you will have more FN, which will reduce recall.
+
+
+Conversely, if you want to increase recall, you can set a lower threshold for classifying a sample as positive. 
+This means that the model will be more liberal in predicting positive samples, 
+which will reduce the number of false negatives and increase recall. 
+However, this will also increase the number of false positives, which will reduce precision.  
+
+
+"""
+
+
+
+
+
+
 
 """
 # uncomment the following lines to visualize a sample digit from the dataset
